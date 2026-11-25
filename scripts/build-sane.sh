@@ -9,7 +9,6 @@ BUILD_ROOT="${PRINTSCAN_BUILD_DIR:-$ROOT_DIR/.build/sane}"
 PREFIX="${PRINTSCAN_SANE_PREFIX:-$HOME/opt/printscan-sane}"
 ARCHIVE="$BUILD_ROOT/$SOURCE_ARCHIVE"
 PATCH_PATH="$ROOT_DIR/drivers/sane/$PATCH_FILE"
-SOURCE_DIR="$BUILD_ROOT/source"
 JOBS="${PRINTSCAN_BUILD_JOBS:-$(nproc)}"
 
 for command_name in curl sha256sum tar patch make; do
@@ -36,6 +35,7 @@ fi
 printf '%s  %s\n' "$PATCH_SHA256" "$PATCH_PATH" | sha256sum --check
 
 WORK_DIR="$(mktemp -d "$BUILD_ROOT/work.XXXXXX")"
+SOURCE_DIR="$WORK_DIR/source"
 cleanup() { rm -rf "$WORK_DIR"; }
 trap cleanup EXIT
 mkdir -p "$SOURCE_DIR"

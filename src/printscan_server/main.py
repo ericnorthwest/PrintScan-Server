@@ -7,7 +7,7 @@ import tempfile
 from pathlib import Path
 
 from fastapi import Depends, FastAPI, File, Form, Header, HTTPException, Request, Response, UploadFile
-from fastapi.responses import FileResponse, JSONResponse
+from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, Field
 from starlette.concurrency import run_in_threadpool
@@ -43,19 +43,7 @@ def create_app() -> FastAPI:
 
     @app.middleware("http")
     async def security_headers(request: Request, call_next):
-        response = None
-        if request.url.path == "/api/v1/print":
-            content_length = request.headers.get("content-length")
-            if content_length:
-                try:
-                    request_size = int(content_length)
-                except ValueError:
-                    response = JSONResponse({"detail": "Invalid Content-Length"}, status_code=400)
-                else:
-                    if request_size > settings.max_upload_bytes + 1024 * 1024:
-                        response = JSONResponse({"detail": "Upload is too large"}, status_code=413)
-        if response is None:
-            response = await call_next(request)
+        response = await call_next(request)
         response.headers["X-Content-Type-Options"] = "nosniff"
         response.headers["Referrer-Policy"] = "same-origin"
         response.headers["X-Frame-Options"] = "DENY"
