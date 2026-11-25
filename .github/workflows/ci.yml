@@ -26,6 +26,8 @@ jobs:
         run: bash scripts/verify-sane-patch.sh
       - name: Check SANE installer syntax
         run: bash -n scripts/install-sane.sh
+      - name: Check development SANE installer syntax
+        run: bash -n scripts/install-sane-dev.sh
       - name: Check SANE build script syntax
         run: bash -n scripts/build-sane.sh
       - name: Compile Python sources
