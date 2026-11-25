@@ -18,9 +18,11 @@ def list_scanners(scanimage_bin: str) -> dict:
     note = None
     if not devices:
         note = (
-            "No SANE devices were reported. The Samsung SCX-4100 needs the patched "
-            "SANE backend and a future USB broker to temporarily release the usblp "
-            "interface before scanning."
+            "No SANE devices are visible to the PrintScan service. Check that "
+            "PRINTSCAN_SCANIMAGE_BIN and SANE_CONFIG_DIR point to the intended "
+            "SANE installation and that the service account can access the scanner. "
+            "The Samsung SCX-4100 also needs the USB broker to release usblp "
+            "temporarily before scanning."
         )
     if result.returncode != 0 and not output.strip():
         raise IntegrationUnavailable("scanimage could not query SANE backends")
