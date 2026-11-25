@@ -10,6 +10,7 @@ User=printscan
 Group=printscan
 WorkingDirectory=/opt/printscan-server
 EnvironmentFile=-/etc/printscan-server/server.env
+EnvironmentFile=-/etc/printscan-server/sane.env
 ExecStart=/opt/printscan-server/.venv/bin/uvicorn printscan_server.main:app --host 0.0.0.0 --port 8090
 Restart=on-failure
 RestartSec=3
