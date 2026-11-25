@@ -21,6 +21,7 @@ The project uses upstream CUPS and SANE rather than attempting to replace the ma
 - Background job history, queue control, and printer administration.
 - First-run setup wizard and multi-user administration UI.
 - Full scanner job orchestration and USB broker.
+- One-command production installer for the complete application stack.
 
 The SCX-4100 was successfully detected and used for a real scan with the custom SANE build. Remaining integration work is to coordinate its shared USB interface safely with CUPS. The web service does not currently detach kernel drivers or run privileged USB operations.
 
@@ -35,7 +36,10 @@ git clone https://github.com/ericnorthwest/PrintScan-Server.git
 cd PrintScan-Server
 uv sync
 cp .env.example .env
+./scripts/install-sane-dev.sh
 ~~~
+
+The development SANE installer automatically downloads the pinned upstream source, verifies it, applies the SCX-4100 patch, builds SANE into your user-local directory, and updates .env with the custom scanimage and library paths. Run it as the same unprivileged user that starts uv; do not use sudo. Restart the web server after it completes.
 
 Edit .env and add the LAN IP or DNS name used to access the server to PRINTSCAN_ALLOWED_HOSTS. The project loads this file at startup.
 
