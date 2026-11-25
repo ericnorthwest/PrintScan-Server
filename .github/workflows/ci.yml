@@ -1,0 +1,33 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out source
+        uses: actions/checkout@v4
+      - name: Install uv
+        uses: astral-sh/setup-uv@v5
+        with:
+          enable-cache: true
+      - name: Set up Python
+        run: uv python install 3.12
+      - name: Install project
+        run: uv sync
+      - name: Compile Python sources
+        run: uv run python -m compileall -q src tests
+      - name: Run unit tests
+        run: uv run python -m unittest discover -s tests -v
+      - name: Import application
+        run: |
+          PRINTSCAN_DATA_DIR="$RUNNER_TEMP/printscan-ci" \
+          PRINTSCAN_ALLOWED_HOSTS="localhost,127.0.0.1,::1" \
+          uv run python -c "from printscan_server.main import app; assert app is not None"
