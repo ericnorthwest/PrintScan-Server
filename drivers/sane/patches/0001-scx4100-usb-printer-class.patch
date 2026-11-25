@@ -1,0 +1,19 @@
+--- a/sanei/sanei_usb.c
++++ b/sanei/sanei_usb.c
+@@ -1928,9 +1928,15 @@
+ 		    case LIBUSB_CLASS_VENDOR_SPEC:
+ 		    case LIBUSB_CLASS_PER_INTERFACE:
+ 		    case LIBUSB_CLASS_PTP:
+-		    case 16:	/* data? */
++                    case 16:    /* data? */
+ 		      found = SANE_TRUE;
+ 		      break;
++
++                    /* Samsung SCX-4100: bidirectional Printer Class */
++                    case LIBUSB_CLASS_PRINTER:
++                      if (vid == 0x04e8 && pid == 0x3413)
++                        found = SANE_TRUE;
++                      break;
+ 		  }
+ 		break;
+ 	    }
