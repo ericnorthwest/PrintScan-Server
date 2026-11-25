@@ -89,31 +89,38 @@ sudo systemctl status printscan-server
 
 Open the configured server address on TCP port 8090.
 
-## 7. Optional: install the pinned SANE build
+## 7. Automatically install the patched SANE build
 
-The regular distro scanimage can remain configured for other scanners. To make
-the patched SCX-4100 backend available to this service, build SANE as the
-unprivileged service account into its data directory:
+After completing the service setup, run this single command from the cloned
+repository:
 
 ~~~bash
-sudo -u printscan env \
-  PRINTSCAN_BUILD_DIR=/var/lib/printscan-server/sane-build \
-  PRINTSCAN_SANE_PREFIX=/var/lib/printscan-server/sane \
-  bash /opt/printscan-server/scripts/build-sane.sh
+sudo ./scripts/install-sane.sh
 ~~~
 
-Then edit server.env and set:
+The installer automatically:
+- downloads the exact SANE source archive pinned in version.lock;
+- verifies its SHA256 checksum;
+- verifies and applies the SCX-4100 patch;
+- builds the upstream backend collection as the unprivileged printscan user;
+- installs the custom SANE libraries and scanimage under
+  /var/lib/printscan-server/sane;
+- writes a dedicated systemd environment file so the web application uses
+  the patched scanimage and its matching libraries;
+- reloads the service unit and restarts PrintScan Server when it is active.
 
-~~~ini
-PRINTSCAN_SCANIMAGE_BIN=/var/lib/printscan-server/sane/bin/scanimage
-LD_LIBRARY_PATH=/var/lib/printscan-server/sane/lib
-SANE_CONFIG_DIR=/var/lib/printscan-server/sane/etc/sane.d
-~~~
+No manual patch copying, patch command, or hand-editing of LD_LIBRARY_PATH is
+required. The installer does not overwrite the system SANE installation.
 
-Restart the service after changing the environment. This makes the patched
-backend discoverable by the application, but it does not yet release the
-SCX-4100's usblp interface. Actual web scanning remains disabled until the
-separate USB broker is installed.
+The patched SANE backend being installed does not by itself grant the service
+account access to the SCX-4100 USB interface. This is a separate integration
+step: the device currently requires usblp to be released for scanning. The
+USB broker is the next implementation milestone; until then, the UI can
+continue to report no available scanners.
+
+If a build dependency is missing, install the distribution build dependencies
+for sane-backends and rerun the same installer. The SANE source and patch are
+pinned, so rerunning the installer is safe and repeatable.
 
 ## 8. IPP access
 
