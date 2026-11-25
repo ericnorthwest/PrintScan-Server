@@ -67,4 +67,6 @@ The device presents a bidirectional Printer Class USB interface. On the validate
 
 Keep the service on a trusted LAN. Use HTTPS when credentials cross networks you do not fully trust, set PRINTSCAN_COOKIE_SECURE=true behind HTTPS, keep PRINTSCAN_ALLOWED_HOSTS explicit, restrict CUPS administration, and run the web process as a dedicated unprivileged account. Do not expose the application directly to the public internet.
 
+Build the pinned SANE backends with scripts/build-sane.sh; see docs/sane-build.md. Deployment notes are in docs/deployment.md. GitHub Actions runs compile, unit-test, and application-import checks on pushes and pull requests.
+
 See docs/architecture.md and docs/security.md.
