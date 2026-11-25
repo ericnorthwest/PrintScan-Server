@@ -22,6 +22,10 @@ jobs:
         run: uv python install 3.12
       - name: Install project
         run: uv sync
+      - name: Verify pinned SANE patch
+        run: bash scripts/verify-sane-patch.sh
+      - name: Check SANE build script syntax
+        run: bash -n scripts/build-sane.sh
       - name: Compile Python sources
         run: uv run python -m compileall -q src tests
       - name: Run unit tests
