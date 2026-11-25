@@ -89,7 +89,7 @@ DISCOVERY_OUTPUT="$(runuser -u "$SERVICE_USER" -- env \
 DISCOVERY_STATUS=$?
 set -e
 printf '%s\n' "$DISCOVERY_OUTPUT"
-if [[ "$DISCOVERY_STATUS" -ne 0 ]] || ! { grep -Fq "device `" <<< "$DISCOVERY_OUTPUT" || grep -Fq "device '" <<< "$DISCOVERY_OUTPUT"; }; then
+if [[ "$DISCOVERY_STATUS" -ne 0 ]] || ! { grep -Fq 'device `' <<< "$DISCOVERY_OUTPUT" || grep -Fq "device '" <<< "$DISCOVERY_OUTPUT"; }; then
   echo
   echo "SANE was installed, but no scanner was confirmed for the service account."
   echo "For the SCX-4100 this is expected until its USB broker is installed."
