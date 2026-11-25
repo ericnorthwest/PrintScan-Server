@@ -91,12 +91,24 @@ Open the configured server address on TCP port 8090.
 
 ## 7. Automatically install the patched SANE build
 
-After completing the service setup, run this single command from the cloned
-repository:
+For the systemd deployment in this guide, run this single command from the
+cloned repository after the service account and systemd unit exist:
 
 ~~~bash
 sudo ./scripts/install-sane.sh
 ~~~
+
+For a development run started directly with `uv run printscan serve`, do not
+use the system installer. Run the user-local installer instead:
+
+~~~bash
+./scripts/install-sane-dev.sh
+~~~
+
+It builds into `~/.local/opt/printscan-sane`, writes the three required SANE
+environment variables into the repository's `.env`, and does not require
+sudo. Run it as the same user and from the same checkout used to start uv.
+Restart the development server after it finishes.
 
 The installer automatically:
 - downloads the exact SANE source archive pinned in version.lock;
