@@ -13,10 +13,12 @@ at least one printer queue.
 ## 2. Install the application
 
 ~~~bash
-sudo install -d -m 0755 /opt/printscan-server
-sudo git clone https://github.com/ericnorthwest/PrintScan-Server.git /opt/printscan-server
+sudo install -d -o "$USER" -g "$(id -gn)" -m 0755 /opt/printscan-server
+git clone https://github.com/ericnorthwest/PrintScan-Server.git /opt/printscan-server
 cd /opt/printscan-server
 uv sync --no-dev
+sudo chown -R root:root /opt/printscan-server
+sudo chmod -R go+rX /opt/printscan-server
 ~~~
 
 If the target directory already exists, clone into it only after confirming
@@ -87,7 +89,33 @@ sudo systemctl status printscan-server
 
 Open the configured server address on TCP port 8090.
 
-## 7. IPP access
+## 7. Optional: install the pinned SANE build
+
+The regular distro scanimage can remain configured for other scanners. To make
+the patched SCX-4100 backend available to this service, build SANE as the
+unprivileged service account into its data directory:
+
+~~~bash
+sudo -u printscan env \
+  PRINTSCAN_BUILD_DIR=/var/lib/printscan-server/sane-build \
+  PRINTSCAN_SANE_PREFIX=/var/lib/printscan-server/sane \
+  bash /opt/printscan-server/scripts/build-sane.sh
+~~~
+
+Then edit server.env and set:
+
+~~~ini
+PRINTSCAN_SCANIMAGE_BIN=/var/lib/printscan-server/sane/bin/scanimage
+LD_LIBRARY_PATH=/var/lib/printscan-server/sane/lib
+SANE_CONFIG_DIR=/var/lib/printscan-server/sane/etc/sane.d
+~~~
+
+Restart the service after changing the environment. This makes the patched
+backend discoverable by the application, but it does not yet release the
+SCX-4100's usblp interface. Actual web scanning remains disabled until the
+separate USB broker is installed.
+
+## 8. IPP access
 
 IPP is served by CUPS, not proxied through the FastAPI application. Configure
 printer sharing and CUPS access controls separately, then restrict TCP port
