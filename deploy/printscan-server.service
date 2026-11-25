@@ -1,0 +1,30 @@
+[Unit]
+Description=PrintScan Server
+After=network-online.target cups.service
+Wants=network-online.target
+Requires=cups.service
+
+[Service]
+Type=simple
+User=printscan
+Group=printscan
+WorkingDirectory=/opt/printscan-server
+EnvironmentFile=-/etc/printscan-server/server.env
+ExecStart=/opt/printscan-server/.venv/bin/uvicorn printscan_server.main:app --host 0.0.0.0 --port 8090
+Restart=on-failure
+RestartSec=3
+UMask=0077
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+ProtectKernelTunables=true
+ProtectKernelModules=true
+ProtectControlGroups=true
+RestrictSUIDSGID=true
+LockPersonality=true
+MemoryDenyWriteExecute=true
+ReadWritePaths=/var/lib/printscan-server
+
+[Install]
+WantedBy=multi-user.target

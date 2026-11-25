@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <title>PrintScan Server</title>
+  <link rel="stylesheet" href="/static/app.css">
+  <script src="/static/app.js" defer></script>
+</head>
+<body>
+  <main class="shell">
+    <header class="topbar">
+      <div class="brand-mark" aria-hidden="true">PS</div>
+      <div><p class="eyebrow">LOCAL NETWORK SERVICE</p><h1>PrintScan Server</h1></div>
+      <button id="logoutButton" class="button button-quiet hidden" type="button">Sign out</button>
+    </header>
+    <section id="loginView" class="panel login-panel">
+      <p class="eyebrow">WELCOME BACK</p><h2>Sign in</h2>
+      <p class="muted">Use the administrator account created on the server.</p>
+      <form id="loginForm" class="stack">
+        <label for="username">Username</label>
+        <input id="username" name="username" autocomplete="username" required maxlength="64">
+        <label for="password">Password</label>
+        <input id="password" name="password" type="password" autocomplete="current-password" required>
+        <button class="button button-primary" type="submit">Sign in</button>
+      </form>
+      <p id="loginMessage" class="message" role="status"></p>
+    </section>
+    <section id="dashboardView" class="hidden">
+      <div class="welcome-row"><div><p class="eyebrow">CONTROL PANEL</p><h2>Devices</h2></div>
+        <button id="refreshButton" class="button button-secondary" type="button">Refresh</button></div>
+      <div class="device-grid">
+        <article class="panel device-card">
+          <div class="card-heading"><span class="device-icon" aria-hidden="true">P</span>
+            <div><h3>Printers</h3><p class="muted">CUPS queues</p></div></div>
+          <p id="printerSummary" class="status-line">Loading printer status…</p>
+          <ul id="printerList" class="device-list"></ul>
+        </article>
+        <article class="panel device-card">
+          <div class="card-heading"><span class="device-icon" aria-hidden="true">S</span>
+            <div><h3>Scanners</h3><p class="muted">SANE backends</p></div></div>
+          <p id="scannerSummary" class="status-line">Loading scanner status…</p>
+          <ul id="scannerList" class="device-list"></ul>
+          <p class="hint">USB coordination for the Samsung SCX-4100 is not yet included.</p>
+        </article>
+      </div>
+      <section class="panel print-panel">
+        <p class="eyebrow">DOCUMENT OUTPUT</p><h2>Print a document</h2>
+        <p class="muted">Submit a file to an existing CUPS printer queue.</p>
+        <form id="printForm" class="stack">
+          <label for="printerSelect">Printer</label>
+          <select id="printerSelect" name="printer" required><option value="">No printer available</option></select>
+          <label for="documentFile">Document</label>
+          <input id="documentFile" name="file" type="file" accept=".pdf,.ps,.jpg,.jpeg,.png,.txt" required>
+          <p class="hint">PDF, PostScript, JPEG, PNG or TXT. Maximum size is configured by the server.</p>
+          <button id="printButton" class="button button-primary" type="submit">Send to printer</button>
+        </form>
+        <p id="printMessage" class="message" role="status"></p>
+      </section>
+    </section>
+    <footer><span>PrintScan Server</span><span id="versionLabel">Local device gateway</span></footer>
+  </main>
+</body>
+</html>
