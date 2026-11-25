@@ -20,7 +20,7 @@ The project uses upstream CUPS and SANE rather than attempting to replace the ma
 - Actual scanner job orchestration and scan download UI.
 - Background job history, queue control, and printer administration.
 - First-run setup wizard and multi-user administration UI.
-- Installer and automated build of the pinned SANE source.
+- Full scanner job orchestration and USB broker.
 
 The SCX-4100 was successfully detected and used for a real scan with the custom SANE build. Remaining integration work is to coordinate its shared USB interface safely with CUPS. The web service does not currently detach kernel drivers or run privileged USB operations.
 
@@ -67,6 +67,6 @@ The device presents a bidirectional Printer Class USB interface. On the validate
 
 Keep the service on a trusted LAN. Use HTTPS when credentials cross networks you do not fully trust, set PRINTSCAN_COOKIE_SECURE=true behind HTTPS, keep PRINTSCAN_ALLOWED_HOSTS explicit, restrict CUPS administration, and run the web process as a dedicated unprivileged account. Do not expose the application directly to the public internet.
 
-Build the pinned SANE backends with scripts/build-sane.sh; see docs/sane-build.md. Deployment notes are in docs/deployment.md. GitHub Actions runs compile, unit-test, and application-import checks on pushes and pull requests.
+Install the patched SANE backends automatically with sudo ./scripts/install-sane.sh after setting up the service; the source and patch are checksum-pinned. See docs/deployment.md and docs/sane-build.md. GitHub Actions runs compile, unit-test, and application-import checks on pushes and pull requests.
 
 See docs/architecture.md and docs/security.md.
