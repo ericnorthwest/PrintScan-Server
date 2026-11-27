@@ -258,7 +258,7 @@ def create_app() -> FastAPI:
             return
 
         output_format = request_data.get("format", "png")
-        if output_format not in SCAN_FORMATS:
+        if not isinstance(output_format, str) or output_format not in SCAN_FORMATS:
             await websocket.send_json({"type": "error", "message": "Неподдерживаемый формат файла."})
             await websocket.close(code=4400)
             return

@@ -48,10 +48,10 @@ def _parse_device_line(line: str) -> dict[str, str] | None:
     tail = line[marker + len("device "):].lstrip()
     if not tail or tail[0] not in ("'", chr(96)):
         return None
-    quote = tail[0]
-    end = tail.find(quote, 1)
-    if end < 0:
+    closing_quotes = [position for position in (tail.find("'", 1), tail.find(chr(96), 1)) if position >= 0]
+    if not closing_quotes:
         return None
+    end = min(closing_quotes)
     name = tail[1:end]
     suffix = tail[end + 1:].strip()
     if not suffix.lower().startswith("is a "):

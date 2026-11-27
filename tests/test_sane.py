@@ -75,7 +75,7 @@ class ScannerOptionTests(unittest.TestCase):
 class ScannerDiscoveryTests(unittest.TestCase):
     def test_parses_device_names(self):
         output = (
-            "device 'xerox_mfp:libusb:001:002' is a SAMSUNG ORION multi-function peripheral\n"
+            "device " + chr(96) + "xerox_mfp:libusb:001:002' is a SAMSUNG ORION multi-function peripheral\n"
             "device 'genesys:libusb:003:004' is a USB flatbed scanner\n"
         )
         from unittest.mock import patch
