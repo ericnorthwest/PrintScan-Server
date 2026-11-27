@@ -348,8 +348,18 @@ def create_app() -> FastAPI:
             control_task = asyncio.create_task(websocket.receive_json())
 
             while not (pump_task.done() and wait_task.done()):
+                watched = set()
+                if not pump_task.done():
+                    watched.add(pump_task)
+                if not wait_task.done():
+                    watched.add(wait_task)
+                if control_task is not None and not control_task.done():
+                    watched.add(control_task)
+                if not watched:
+                    break
+
                 done, _ = await asyncio.wait(
-                    {pump_task, wait_task, control_task},
+                    watched,
                     return_when=asyncio.FIRST_COMPLETED,
                 )
 
@@ -358,6 +368,9 @@ def create_app() -> FastAPI:
                         control = control_task.result()
                     except WebSocketDisconnect:
                         disconnected = True
+                        break
+                    except Exception:
+                        failure = "Получена некорректная команда управления сканированием."
                         break
                     if isinstance(control, dict) and control.get("action") == "cancel":
                         cancelled = True
@@ -416,7 +429,7 @@ def create_app() -> FastAPI:
                 "bytes": total_bytes,
                 "format": output_format,
             })
-        except (SaneError, OSError, Image.UnidentifiedImageError) as exc:
+        except Exception as exc:
             with suppress(FileNotFoundError):
                 raw_path.unlink()
             with suppress(FileNotFoundError):
