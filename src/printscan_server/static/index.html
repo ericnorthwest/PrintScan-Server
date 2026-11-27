@@ -1,9 +1,9 @@
 <!doctype html>
-<html lang="en">
+<html lang="ru">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="color-scheme" content="light dark">
+  <meta name="theme-color" content="#18191d">
   <title>PrintScan Server</title>
   <link rel="stylesheet" href="/static/app.css">
   <script src="/static/app.js" defer></script>
@@ -12,54 +12,109 @@
   <main class="shell">
     <header class="topbar">
       <div class="brand-mark" aria-hidden="true">PS</div>
-      <div><p class="eyebrow">LOCAL NETWORK SERVICE</p><h1>PrintScan Server</h1></div>
-      <button id="logoutButton" class="button button-quiet hidden" type="button">Sign out</button>
-    </header>
-    <section id="loginView" class="panel login-panel">
-      <p class="eyebrow">WELCOME BACK</p><h2>Sign in</h2>
-      <p class="muted">Use the administrator account created on the server.</p>
-      <form id="loginForm" class="stack">
-        <label for="username">Username</label>
-        <input id="username" name="username" autocomplete="username" required maxlength="64">
-        <label for="password">Password</label>
-        <input id="password" name="password" type="password" autocomplete="current-password" required>
-        <button class="button button-primary" type="submit">Sign in</button>
-      </form>
-      <p id="loginMessage" class="message" role="status"></p>
-    </section>
-    <section id="dashboardView" class="hidden">
-      <div class="welcome-row"><div><p class="eyebrow">CONTROL PANEL</p><h2>Devices</h2></div>
-        <button id="refreshButton" class="button button-secondary" type="button">Refresh</button></div>
-      <div class="device-grid">
-        <article class="panel device-card">
-          <div class="card-heading"><span class="device-icon" aria-hidden="true">P</span>
-            <div><h3>Printers</h3><p class="muted">CUPS queues</p></div></div>
-          <p id="printerSummary" class="status-line">Loading printer status…</p>
-          <ul id="printerList" class="device-list"></ul>
-        </article>
-        <article class="panel device-card">
-          <div class="card-heading"><span class="device-icon" aria-hidden="true">S</span>
-            <div><h3>Scanners</h3><p class="muted">SANE backends</p></div></div>
-          <p id="scannerSummary" class="status-line">Loading scanner status…</p>
-          <ul id="scannerList" class="device-list"></ul>
-          <p class="hint">USB coordination for the Samsung SCX-4100 is not yet included.</p>
-        </article>
+      <div class="brand-copy">
+        <p class="eyebrow">LOCAL SCANNER</p>
+        <h1>PrintScan</h1>
       </div>
-      <section class="panel print-panel">
-        <p class="eyebrow">DOCUMENT OUTPUT</p><h2>Print a document</h2>
-        <p class="muted">Submit a file to an existing CUPS printer queue.</p>
-        <form id="printForm" class="stack">
-          <label for="printerSelect">Printer</label>
-          <select id="printerSelect" name="printer" required><option value="">No printer available</option></select>
-          <label for="documentFile">Document</label>
-          <input id="documentFile" name="file" type="file" accept=".pdf,.ps,.jpg,.jpeg,.png,.txt" required>
-          <p class="hint">PDF, PostScript, JPEG, PNG or TXT. Maximum size is configured by the server.</p>
-          <button id="printButton" class="button button-primary" type="submit">Send to printer</button>
+      <div class="topbar-actions">
+        <span id="userLabel" class="user-label hidden"></span>
+        <button id="logoutButton" class="button button-quiet hidden" type="button">Выйти</button>
+      </div>
+    </header>
+
+    <section id="loginView" class="login-layout">
+      <div class="intro">
+        <p class="eyebrow">СКАНИРОВАНИЕ ПО ЛОКАЛЬНОЙ СЕТИ</p>
+        <h2>Сканер всегда<br>под рукой.</h2>
+        <p class="muted">Управляйте сканированием с компьютера, планшета или телефона. Предпросмотр обновляется прямо во время работы сканера.</p>
+      </div>
+      <section class="panel login-panel" aria-labelledby="loginTitle">
+        <p class="eyebrow">ДОСТУП</p>
+        <h2 id="loginTitle">Вход в PrintScan</h2>
+        <form id="loginForm" class="stack">
+          <label for="username">Логин</label>
+          <input id="username" name="username" autocomplete="username" required maxlength="64">
+          <label for="password">Пароль</label>
+          <input id="password" name="password" type="password" autocomplete="current-password" required maxlength="256">
+          <button class="button button-primary" type="submit">Войти</button>
         </form>
-        <p id="printMessage" class="message" role="status"></p>
+        <p id="loginMessage" class="message" role="status"></p>
       </section>
     </section>
-    <footer><span>PrintScan Server</span><span id="versionLabel">Local device gateway</span></footer>
+
+    <section id="dashboardView" class="workspace hidden">
+      <section class="control-panel panel">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">УСТРОЙСТВО</p>
+            <h2>Параметры сканирования</h2>
+          </div>
+          <button id="refreshButton" class="button button-quiet" type="button">Обновить</button>
+        </div>
+
+        <div class="settings-grid">
+          <div class="field field-wide">
+            <label for="scannerSelect">Сканер</label>
+            <select id="scannerSelect"><option value="">Поиск устройств…</option></select>
+            <p id="scannerStatus" class="field-note">Поиск устройств SANE</p>
+          </div>
+          <div class="field">
+            <label for="modeSelect">Режим</label>
+            <select id="modeSelect" disabled><option value="">Не загружен</option></select>
+          </div>
+          <div class="field">
+            <label for="sourceSelect">Источник</label>
+            <select id="sourceSelect" disabled><option value="">Не загружен</option></select>
+          </div>
+          <div class="field">
+            <label for="formatSelect">Сохранить как</label>
+            <select id="formatSelect">
+              <option value="png">PNG</option>
+              <option value="jpg">JPEG</option>
+              <option value="pdf">PDF</option>
+            </select>
+          </div>
+          <div class="field" id="resolutionField">
+            <label for="resolutionSelect">Разрешение</label>
+            <select id="resolutionSelect" disabled><option value="">Не загружено</option></select>
+          </div>
+        </div>
+
+        <div class="action-row">
+          <button id="scanButton" class="button button-primary" type="button" disabled>Начать сканирование</button>
+          <button id="cancelButton" class="button button-quiet hidden" type="button">Отменить</button>
+          <span id="scanStatus" class="scan-status" role="status">Выберите сканер</span>
+        </div>
+      </section>
+
+      <section class="preview-panel panel">
+        <div class="section-heading preview-heading">
+          <div>
+            <p class="eyebrow">LIVE PREVIEW</p>
+            <h2>Предпросмотр</h2>
+          </div>
+          <a id="downloadButton" class="button button-secondary hidden" href="#" download>Скачать результат</a>
+        </div>
+        <div class="progress-row">
+          <div class="progress-track"><div id="progressBar" class="progress-fill"></div></div>
+          <span id="progressLabel">Ожидание</span>
+        </div>
+        <div class="canvas-wrap" id="canvasWrap">
+          <div id="emptyPreview" class="empty-preview">
+            <div class="scanner-glyph" aria-hidden="true">▤</div>
+            <p>Здесь появится изображение</p>
+            <span>После запуска сканирования строки будут появляться по мере чтения сканера</span>
+          </div>
+          <canvas id="previewCanvas" class="hidden" aria-label="Постепенно обновляемый предпросмотр сканирования"></canvas>
+        </div>
+        <p id="previewNote" class="preview-note">Настройки режима и разрешения загружаются непосредственно из SANE.</p>
+      </section>
+    </section>
+
+    <footer>
+      <span>PrintScan Server</span>
+      <span>Локальное сканирование · SANE</span>
+    </footer>
   </main>
 </body>
 </html>

@@ -1,8 +1,7 @@
 [Unit]
 Description=PrintScan Server
-After=network-online.target cups.service
+After=network-online.target
 Wants=network-online.target
-Requires=cups.service
 
 [Service]
 Type=simple

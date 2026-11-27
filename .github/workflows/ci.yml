@@ -30,6 +30,8 @@ jobs:
         run: bash -n scripts/install-sane-dev.sh
       - name: Check SANE build script syntax
         run: bash -n scripts/build-sane.sh
+      - name: Check browser JavaScript syntax
+        run: node --check src/printscan_server/static/app.js
       - name: Compile Python sources
         run: uv run python -m compileall -q src tests
       - name: Run unit tests
